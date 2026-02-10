@@ -1,0 +1,55 @@
+apiVersion: kargo.akuity.io/v1alpha1
+kind: Stage
+metadata:
+  name: dev
+  namespace: edge-promo
+spec:
+  requestedFreight:
+  - origin:
+      kind: Warehouse
+      name: edge-nginx
+    sources:
+      direct: true
+
+  promotionTemplate:
+    spec:
+      vars:
+      - name: gitopsRepo
+        value: https://github.com/<you>/<repo>.git
+      - name: imageRepo
+        value: public.ecr.aws/nginx/nginx
+
+      steps:
+      - uses: git-clone
+        config:
+          repoURL: ${{ vars.gitopsRepo }}
+          checkout:
+          - branch: main
+            path: ./repo
+
+      - uses: kustomize-set-image
+        as: update-image
+        config:
+          path: ./repo/apps/overlays/dev
+          images:
+          - image: ${{ vars.imageRepo }}
+            tag: ${{ imageFrom(vars.imageRepo).Tag }}
+
+      - uses: git-commit
+        as: commit
+        config:
+          path: ./repo
+          message: |
+            dev: ${{ outputs['update-image'].commitMessage }}
+
+      - uses: git-push
+        config:
+          path: ./repo
+
+      - uses: argocd-update
+        config:
+          apps:
+          - name: edge-nginx-dev
+            sources:
+            - repoURL: ${{ vars.gitopsRepo }}
+              desiredRevision: ${{ outputs.commit.commit }}

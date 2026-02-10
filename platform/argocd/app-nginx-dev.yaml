@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: edge-nginx-dev
+  namespace: argocd
+  annotations:
+    kargo.akuity.io/authorized-stage: edge-promo:dev
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/<you>/<repo>.git
+    targetRevision: main
+    path: apps/overlays/dev
+  destination:
+    name: kind-akuity-dev
+    namespace: edge-dev
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

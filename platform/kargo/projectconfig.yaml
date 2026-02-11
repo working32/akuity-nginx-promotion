@@ -2,6 +2,10 @@ apiVersion: kargo.akuity.io/v1alpha1
 kind: ProjectConfig
 metadata:
   name: edge-promo
+  namespace: edge-promo
 spec:
-  project:
-    name: edge-promo
+  promotionPolicies:
+    - stage: dev
+      autoPromotionEnabled: false
+    - stage: prod
+      autoPromotionEnabled: false

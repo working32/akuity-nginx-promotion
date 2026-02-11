@@ -15,7 +15,7 @@ spec:
     spec:
       vars:
       - name: gitopsRepo
-        value: https://github.com/<you>/<repo>.git
+        value: https://github.com/working32/akuity-nginx-promotion.git
       - name: imageRepo
         value: public.ecr.aws/nginx/nginx
 

@@ -4,3 +4,6 @@ namespace: edge-prod
 resources:
 - ../../base
 nameSuffix: -prod
+images:
+- name: public.ecr.aws/nginx/nginx
+  newTag: 1.29.5

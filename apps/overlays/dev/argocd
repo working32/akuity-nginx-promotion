@@ -1,0 +1,43 @@
+kubectl apply -f - <<'YAML'
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: edge-nginx-dev
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/working32/akuity-nginx-promotion.git
+    targetRevision: main
+    path: apps/overlays/dev
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: edge-nginx-dev
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: edge-nginx-prod
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/working32/akuity-nginx-promotion.git
+    targetRevision: main
+    path: apps/overlays/prod
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: edge-nginx-prod
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
+YAML

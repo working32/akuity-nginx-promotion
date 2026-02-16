@@ -47,8 +47,6 @@ spec:
           path: ./repo
 
       - uses: argocd-update
-        retry:
-          timeout: 15m
         config:
           apps:
           - name: edge-nginx-dev
